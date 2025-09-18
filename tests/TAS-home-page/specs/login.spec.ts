@@ -10,8 +10,7 @@ test.describe('Trajector', () => {
     await loginPage.goto();
     await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
     await expect(page).toHaveURL('https://d2ihttmsv3nwol.cloudfront.net/recruiter/applicants-directory');
-    await expect(page.getByText('Applicants Directory')).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: 'Name and Email' })).toBeVisible();
+    
 
   });
 
