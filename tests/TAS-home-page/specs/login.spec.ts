@@ -9,6 +9,10 @@ test.describe('Trajector', () => {
 
     await loginPage.goto();
     await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
+
+    // Wait for all network requests to finish
+    await page.waitForLoadState('networkidle'); 
+  
     await expect(page).toHaveURL('https://d2ihttmsv3nwol.cloudfront.net/recruiter/applicants-directory');
     
 
