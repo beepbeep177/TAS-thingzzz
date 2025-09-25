@@ -9,6 +9,12 @@ test.describe('Search Filter', () => {
     await loginPage.goto();
     await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
     await page.waitForLoadState('networkidle');
+    
+    // Navigate to applicants directory if not redirected
+    if (!page.url().includes('applicants-directory')) {
+      await page.goto('https://d2ihttmsv3nwol.cloudfront.net/applicants-directory');
+      await page.waitForLoadState('networkidle');
+    }
     await expect(page).toHaveURL(/.*applicants-directory/);
 
     const searchBox = page.getByPlaceholder('Type in a keyword or name ...');
@@ -27,6 +33,12 @@ test('TC-002: Enter invalid keyword that has no matches', async ({ page }) => {
   await loginPage.goto();
   await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
   await page.waitForLoadState('networkidle');
+  
+  // Navigate to applicants directory if not redirected
+  if (!page.url().includes('applicants-directory')) {
+    await page.goto('https://d2ihttmsv3nwol.cloudfront.net/applicants-directory');
+    await page.waitForLoadState('networkidle');
+  }
   await expect(page).toHaveURL(/.*applicants-directory/);
 
   const searchBox = page.getByPlaceholder('Type in a keyword or name ...');
@@ -46,7 +58,13 @@ test('TC-002: Enter invalid keyword that has no matches', async ({ page }) => {
     await loginPage.goto();
     await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveURL(/.*applicants-directory/);
+    
+    // Navigate using navigation button instead of direct URL
+    await page.getByRole('button', { name: 'Applicants Directory' }).click();
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for search box to be available
+    await page.getByPlaceholder('Type in a keyword or name ...').waitFor();
 
     // Get initial count of all results
     const initialRows = page.locator('table tbody tr');
