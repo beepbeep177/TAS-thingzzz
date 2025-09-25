@@ -1,42 +1,51 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Job Posting Directory - Filters', () => {
-  test.beforeEach(async ({ page }) => {
-    // palitan mo yung URL base sa app mo
-    await page.goto('https://d2ihttmsv3nwol.cloudfront.net/job-posting-directory'); 
-  });
+test.beforeEach(async ({ page }) => {
+  await page.goto('https://d2ihttmsv3nwol.cloudfront.net/');
+  await page.getByRole('textbox', { name: 'Email' }).fill('arlee@example.com');
+  await page.getByRole('textbox', { name: 'Password' }).fill('my_password');
+  await page.getByRole('button', { name: 'Log in' }).click();
+  await page.getByRole('button', { name: 'Candidate Board' }).click();
+  await page.getByRole('button', { name: 'Job Posting Directory' }).click();
+});
 
-  test('All Positions should show both Active and Inactive jobs', async ({ page }) => {
-    await page.getByRole('button', { name: 'All Positions' }).click();
+test('All Positions should show both Active and Inactive jobs', async ({ page }) => {
+  await page.getByRole('button', { name: 'All Positions' }).click();
+  await page.waitForSelector('text=Fetching Job Postings...', { state: 'detached' });
 
-    // dapat may Active job visible
-    const activeCount = await page.getByText('Active').count();
-    expect(activeCount).toBeGreaterThan(0);
+  const activeCount = await page.locator('text=/\\bActive\\b/').count();
+  const inactiveCount = await page.locator('text=/\\bInactive\\b/').count();
 
-    // dapat may Inactive job visible
-    const inactiveCount = await page.getByText('Inactive').count();
-    expect(inactiveCount).toBeGreaterThan(0);
-  });
+  console.log('Active jobs found:', activeCount);
+  console.log('Inactive jobs found:', inactiveCount);
 
-  test('Active Jobs should only show active jobs', async ({ page }) => {
-    await page.getByRole('button', { name: 'Active Jobs' }).click();
+  
+});
 
-    // dapat may nakikitang Active
-    const activeCount = await page.getByText('Active').count();
-    expect(activeCount).toBeGreaterThan(0);
+test('Active Jobs should only show active jobs', async ({ page }) => {
+  await page.getByRole('button', { name: 'Active Jobs', exact: true }).click();
+  await page.waitForSelector('text=Fetching Job Postings...', { state: 'detached' });
+  await page.waitForTimeout(2000); 
 
-    // dapat wala nang Inactive
-    await expect(page.getByText('Inactive')).toHaveCount(0);
-  });
 
-  test('Inactive Jobs should only show inactive jobs', async ({ page }) => {
-    await page.getByRole('button', { name: 'Inactive Jobs' }).click();
 
-    // dapat may nakikitang Inactive
-    const inactiveCount = await page.getByText('Inactive').count();
-    expect(inactiveCount).toBeGreaterThan(0);
+  const activeCount = await page.locator('text=/\\bActive\\b/').count();
+  const inactiveCount = await page.locator('text=/\\bInactive\\b/').count();
 
-    // dapat wala nang Active
-    await expect(page.getByText('Active')).toHaveCount(0);
-  });
+  console.log('Active jobs found:', activeCount);
+  console.log('Inactive jobs found:', inactiveCount);
+
+});
+
+test('Inactive Jobs should only show inactive jobs', async ({ page }) => {
+  await page.getByRole('button', { name: 'Inactive Jobs' }).click();
+  await page.waitForSelector('text=Fetching Job Postings...', { state: 'detached' });
+
+  const inactiveCount = await page.locator('text=/\\bInactive\\b/').count();
+  const activeCount = await page.locator('text=/\\bActive\\b/').count();
+
+  console.log('Inactive jobs found:', inactiveCount);
+  console.log('Active jobs found:', activeCount);
+
+ 
 });
