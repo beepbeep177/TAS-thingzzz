@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { USERS } from '../fixtures/testData';  
+import { USERS } from '../fixtures/testData';
 import { LoginPage } from '../pages/LoginPage';
-
 
 test.describe('Trajector', () => {
   test('Login Test', async ({ page }) => {
@@ -9,14 +8,7 @@ test.describe('Trajector', () => {
 
     await loginPage.goto();
     await loginPage.login(USERS.STANDARD.username, USERS.STANDARD.password);
-
-    // Wait for all network requests to finish
-    await page.waitForLoadState('networkidle'); 
-  
+    await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL('https://d2ihttmsv3nwol.cloudfront.net/recruiter/applicants-directory');
-    
-
   });
-
- 
 });
